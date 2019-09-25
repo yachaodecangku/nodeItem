@@ -1,0 +1,116 @@
+<%include ../header.ejs%>
+
+<body class="layui-layout-body">
+    <div class="layui-layout layui-layout-admin">
+       <% include nav.ejs%>
+        <div class="layui-body">
+            <!-- 内容主体区域 -->
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+                <legend>全部用户</legend>
+            </fieldset>
+            <table lay-filter="demo" class="layui-hide" id="test"></table>
+            <script type="text/html" id="barDemo">
+               <a class="layui-btn layui-btn-xs" lay-event="edit">更改级别</a>
+               <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除用户</a>
+            </script>
+        </div>
+
+        <div class="layui-footer">
+            <!-- 底部固定区域 -->
+            Super Administrator &nbsp;&nbsp;&nbsp;&nbsp;318112599@qq.com  --yc&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  注意&nbsp;:&nbsp;&nbsp;普通用户权限为1，管理员权限为10，超级管理员权限为999
+        </div>
+    </div>
+    <script src="../src/layui.js"></script>
+
+    <script>
+        //JavaScript代码区域
+        /*layui.use(['element',"table","form"], function(){
+            var element = layui.element;
+            var form = layui.form;
+            var $ = layui.$;
+
+        });*/
+        layui.use(["table","form"], function(){
+            var table = layui.table;
+            var  form = layui.form;
+            var  $ = layui.$;
+            table.render({
+                elem: '#test'
+                ,url:'/admin/user',
+                method:"post"
+                ,cols: [[
+                    {field:'username', width:320, title: '用户名'},
+                    {field:"level",width:320,title:"级别"},
+                    {field:"used",title:"账号是否可用",width:320,templet:function (d) {
+                            return `<input type="checkbox" name="used" value="${d._id}" lay-skin="switch" lay-text="可用|不可用" lay-filter="usedDemo" ${d.used === true ? 'checked' : ''}>`
+                        }},
+                    {field:"tool",toolbar:"#barDemo"},
+
+                       ]]
+                ,page: true
+
+            });
+            //监听表格为demo的工具条
+            table.on("tool(demo)",function(obj){
+                if (obj.event === "del"){
+                    layer.confirm('你好好想想你在做什么', {icon: 3, title:'提示'}, function(index){
+                        $.ajax({
+                            url:"/admin/user/del",
+                            method:"post",
+                            data:{
+                                _id:obj.data._id
+                            },
+                        })
+                            obj.del()
+
+                        layer.close(index);
+                    });
+
+                }else if(obj.event === "edit"){
+                    layer.prompt(function(value, index, elem){
+                        $.ajax({
+                        url:"/admin/user/relevel",
+                        method:"post",
+                        data:{
+                            _id :obj.data._id,
+                            level:value
+                        },
+
+                     })
+                    layer.close(index);
+                    });
+                }
+            });
+            form.on('switch(usedDemo)', function(obj){
+                layui.$.ajax({
+                    url: '/admin/user/reuserd',
+                    method: 'post',
+                    data: {
+                        user_id: this.value,
+                        used: obj.elem.checked
+                    },
+                    success: function (res) {
+                        res.code === 0 && layer.tips(res.data, obj.othis);
+                        res.code === 1 && layer.alert(res.data, function () {
+                            window.location.reload()
+                        })
+                    }
+                })
+
+            });
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,11 @@
+{
+  "name":"Yc",
+   "short_name":"nihao",
+   "display":"fullscreen",
+   "icons":[{"url":"../view/public/img/reg.jpg",
+              "sizes":"512X512",
+               "type":"img/jpg"
+}],
+   "background_color":"#996633",
+   "theme_color":"#ff0036";
+}
